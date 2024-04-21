@@ -16,12 +16,12 @@ To follow this tutorial, you will need:
 Clone the repository
 
 ```bash
-Project repo: https://github.com/
+Project repo: https://github.com/HarshalGidh/Telegram-ChatBot-using-Gemini
 ```
 ### STEP 01- Create a conda environment after opening the repository
 
 ```bash
-conda create -n telebot python=3.8 -y
+conda create -n telebot python=3.10 -y
 ```
 
 ```bash
@@ -53,7 +53,7 @@ https://docs.aiogram.dev/en/latest/
 ### Add in .env
 
 ```ini
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GEMINI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TELEGRAM_BOT_TOKEN=xxxxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
