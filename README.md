@@ -19,6 +19,15 @@ To follow this tutorial, you will need:
 
 -For example, my chatbot is named telebot so when i run my application, the chatbot gets activated and can be used by anyone.
 
+### Search the ChatBot on Telegram
+-On Telegram Search 
+```bash 
+@tel28_bot
+```
+
+   or
+
+-Search https://t.me/tel28_bot 
 ### Start the Chat
 
 ![Screenshot 2024-04-21 184234](https://github.com/HarshalGidh/Telegram-ChatBot-using-Gemini/assets/126465410/4b3352c7-2bc8-42f7-9a38-371153fe39ea)
