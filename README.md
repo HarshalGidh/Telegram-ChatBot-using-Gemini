@@ -51,14 +51,9 @@ https://docs.aiogram.dev/en/latest/
 
 
 ### Add in .env
-
+Store your Telgram Bot Token and GEMINI API key in .env file
 ```ini
 GEMINI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TELEGRAM_BOT_TOKEN=xxxxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
-
-
-### Drive link for other integrations
-
-[Link](https://drive.google.com/drive/folders/1JlvnNZczhDtwaypRavkiZjvxOnKp7bsW?usp=sharing)
 
