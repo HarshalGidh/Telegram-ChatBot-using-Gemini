@@ -46,7 +46,7 @@ async def welcome(message: types.Message):
     Args:
         message (types.Message): description
     """
-    await message.reply("Hi\nI am a ChatBot! Created by Harshal Gidh!. How can i assist you?")
+    await message.reply("Hi\nI am a Chat Bot! Created by Harshal Gidh!. How can i assist you?")
 
 
 @dispatcher.message_handler(commands=['help'])
@@ -55,7 +55,7 @@ async def helper(message: types.Message):
     A handler to display the help menu.
     """
     help_command = """
-    Hi There, I'm a  Chatbot created by Harshal Gidh! Please follow these commands - 
+    Hi There, I'm a bot created by Harshal Gidh! Please follow these commands - 
     /start - to start the conversation
     /clear - to clear the past conversation and context.
     /help - to get this help menu.
