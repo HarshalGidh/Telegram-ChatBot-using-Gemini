@@ -1,5 +1,5 @@
 python-dotenv
-aiogram == 2.5
+aiogram
 langchain-google-genai
 google-generativeai
 IPython
@@ -11,12 +11,18 @@ docx2txt
 langchain-community
 langchain-google-vertexai
 google-auth
-google-auth-oauthlib 
-google-auth-httplib2 
+google-auth-oauthlib
+google-auth-httplib2
 google-cloud-aiplatform
-matplotlib 
+matplotlib
 seaborn
-requests 
-pandas 
-openpyxl 
+requests
+pandas
+openpyxl
 xlsxwriter
+yfinance
+db-dtypes
+faiss-cpu
+langchain-community-faiss-cpu
+streamlit
+streamlit-autocomplete
