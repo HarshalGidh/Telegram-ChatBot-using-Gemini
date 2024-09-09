@@ -487,7 +487,7 @@ async def make_retrieval_chain(retriever): # GET Method
                 Roth IRA/Roth 401(k): Utilize these tax-advantaged accounts for long-term growth and tax-free withdrawals in retirement. 
                 
                 
-                Percentage Allocation: Allocate between 40% and 60% of your investable assets towards these growth-oriented investments. This range allows for flexibility based on your comfort level and market conditions.
+                Percentage Allocation for Growth-Oriented Investments: Allocate between 40% and 60% of your investable assets towards these growth-oriented investments. This range allows for flexibility based on your comfort level and market conditions.
 
                 Conservative Investments (Minimum 40% - Maximum 60%): Target: Prioritize safety and capital preservation with lower risk. 
                 How to Invest: Bonds: Invest in government or corporate bonds with varying maturities to match your time horizon. 
@@ -502,7 +502,7 @@ async def make_retrieval_chain(retriever): # GET Method
                 
                 Real Estate(20%-30%): Invest directly in rental properties or through REITs available through brokerage accounts. 
                 
-                Percentage Allocation: Allocate between 40% and 60% of your investable assets towards these conservative investments. This range ensures a balance between growth and security.
+                Percentage Allocation for Conservative Investments: Allocate between 40% and 60% of your investable assets towards these conservative investments. This range ensures a balance between growth and security.
 
                 Time Horizon and Expected Returns:
 
@@ -796,6 +796,12 @@ def extract_numerical_data(response):
         }
 
     return data
+
+def normalize_allocations(allocations):
+    total = sum(allocations)
+    if total == 100:
+        return allocations
+    return [round((allocation / total) * 100, 2) for allocation in allocations]
 
 
 def plot_investment_allocations(data):
@@ -1976,26 +1982,91 @@ def generate_investment_suggestions():
         formatSuggestions = markdown_to_text(suggestions)
         data_extracted = extract_numerical_data(suggestions)
         
+        min_allocations = [int(data_extracted['Growth-Oriented Investments'][label]['min'].strip('%')) for label in data_extracted['Growth-Oriented Investments']] + \
+                        [int(data_extracted['Conservative Investments'][label]['min'].strip('%')) for label in data_extracted['Conservative Investments']]
+        max_allocations = [int(data_extracted['Growth-Oriented Investments'][label]['max'].strip('%')) for label in data_extracted['Growth-Oriented Investments']] + \
+                        [int(data_extracted['Conservative Investments'][label]['max'].strip('%')) for label in data_extracted['Conservative Investments']]
+
+        # Normalize allocations
+        min_allocations = normalize_allocations(min_allocations)
+        max_allocations = normalize_allocations(max_allocations)
+
+        # Update Bar Chart Data
+        bar_chart_data = {
+            'labels': list(data_extracted['Growth-Oriented Investments'].keys()) + list(data_extracted['Conservative Investments'].keys()),
+            'datasets': [{
+                'label': 'Min Allocation',
+                'data': min_allocations,
+                'backgroundColor': 'skyblue'
+            },
+            {
+                'label': 'Max Allocation',
+                'data': max_allocations,
+                'backgroundColor': 'lightgreen'
+            }]
+        }
+
+        # Similar changes can be made for the Pie Chart Data:
         all_labels = list({**data_extracted['Growth-Oriented Investments'], **data_extracted['Conservative Investments']}.keys())
         num_labels = len(all_labels)
+        max_allocations_for_pie = normalize_allocations(
+            [int(data_extracted['Growth-Oriented Investments'].get(label, {}).get('max', '0').strip('%')) for label in data_extracted['Growth-Oriented Investments']] + 
+            [int(data_extracted['Conservative Investments'].get(label, {}).get('max', '0').strip('%')) for label in data_extracted['Conservative Investments']]
+        )
         
         # Generate colors based on the number of labels
         dynamic_colors = generate_colors(num_labels)
-        
-        # Pie Chart Data
+
+        # Update Pie Chart Data
         pie_chart_data = {
             'labels': all_labels,
             'datasets': [{
                 'label': 'Investment Allocation',
-                'data': [int(data_extracted['Growth-Oriented Investments'].get(label, {}).get('max', '0').strip('%')) 
-                        for label in data_extracted['Growth-Oriented Investments']] + 
-                        [int(data_extracted['Conservative Investments'].get(label, {}).get('max', '0').strip('%')) 
-                        for label in data_extracted['Conservative Investments']],
-                'backgroundColor': dynamic_colors,  # Use the dynamically generated colors
+                'data': max_allocations_for_pie,
+                'backgroundColor': dynamic_colors,
                 'hoverOffset': 4
             }]
         }
+        
+        # all_labels = list({**data_extracted['Growth-Oriented Investments'], **data_extracted['Conservative Investments']}.keys())
+        # num_labels = len(all_labels)
+        
+        
+        
+        # # Pie Chart Data
         # pie_chart_data = {
+        #     'labels': all_labels,
+        #     'datasets': [{
+        #         'label': 'Investment Allocation',
+        #         'data': [int(data_extracted['Growth-Oriented Investments'].get(label, {}).get('max', '0').strip('%')) 
+        #                 for label in data_extracted['Growth-Oriented Investments']] + 
+        #                 [int(data_extracted['Conservative Investments'].get(label, {}).get('max', '0').strip('%')) 
+        #                 for label in data_extracted['Conservative Investments']],
+        #         'backgroundColor': dynamic_colors,  # Use the dynamically generated colors
+        #         'hoverOffset': 4
+        #     }]
+        # }
+        
+        
+        #  # Bar Chart Data
+        # bar_chart_data = {
+        #     'labels': list(data_extracted['Growth-Oriented Investments'].keys()) + list(data_extracted['Conservative Investments'].keys()),
+        #     'datasets': [{
+        #         'label': 'Min Allocation',
+        #         'data': [int(data_extracted['Growth-Oriented Investments'][label]['min'].strip('%')) for label in data_extracted['Growth-Oriented Investments']] + 
+        #                 [int(data_extracted['Conservative Investments'][label]['min'].strip('%')) for label in data_extracted['Conservative Investments']],
+        #         'backgroundColor': 'skyblue'
+        #     },
+        #     {
+        #         'label': 'Max Allocation',
+        #         'data': [int(data_extracted['Growth-Oriented Investments'][label]['max'].strip('%')) for label in data_extracted['Growth-Oriented Investments']] + 
+        #                 [int(data_extracted['Conservative Investments'][label]['max'].strip('%')) for label in data_extracted['Conservative Investments']],
+        #         'backgroundColor': 'lightgreen'
+        #     }]
+        # }
+        
+        
+        # pie_chart_data = { # 1st version
         #     'labels': list({**data_extracted['Growth-Oriented Investments'], **data_extracted['Conservative Investments']}.keys()),
         #     'datasets': [{
         #         'label': 'Investment Allocation',
@@ -2006,22 +2077,7 @@ def generate_investment_suggestions():
         #     }]
         # }
 
-        # Bar Chart Data
-        bar_chart_data = {
-            'labels': list(data_extracted['Growth-Oriented Investments'].keys()) + list(data_extracted['Conservative Investments'].keys()),
-            'datasets': [{
-                'label': 'Min Allocation',
-                'data': [int(data_extracted['Growth-Oriented Investments'][label]['min'].strip('%')) for label in data_extracted['Growth-Oriented Investments']] + 
-                        [int(data_extracted['Conservative Investments'][label]['min'].strip('%')) for label in data_extracted['Conservative Investments']],
-                'backgroundColor': 'skyblue'
-            },
-            {
-                'label': 'Max Allocation',
-                'data': [int(data_extracted['Growth-Oriented Investments'][label]['max'].strip('%')) for label in data_extracted['Growth-Oriented Investments']] + 
-                        [int(data_extracted['Conservative Investments'][label]['max'].strip('%')) for label in data_extracted['Conservative Investments']],
-                'backgroundColor': 'lightgreen'
-            }]
-        }
+       
         
         # return jsonify({"status":200,"message":"Success",'investmentSuggestions': htmlSuggestions}), 200
         return jsonify({
