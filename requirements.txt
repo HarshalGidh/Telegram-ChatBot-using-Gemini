@@ -25,4 +25,8 @@ db-dtypes
 faiss-cpu
 langchain-community-faiss-cpu
 streamlit
-streamlit-autocomplete
+flask
+flask-cors
+markdown
+markdown2
+bs4
