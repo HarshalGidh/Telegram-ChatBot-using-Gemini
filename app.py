@@ -878,6 +878,74 @@ def prepare_line_chart_data_with_inflation(data_extracted, initial_investment=10
     return compounded_return_chart_data, inflation_adjusted_chart_data
 
 
+# def prepare_combined_line_chart_data(data_extracted, initial_investment, inflation_rate=4):
+#     min_return = float(data_extracted['Expected Annual Return']['min'].strip('%'))
+#     max_return = float(data_extracted['Expected Annual Return']['max'].strip('%'))
+#     min_years = int(data_extracted['Time Horizon']['min_years'])
+#     max_years = int(data_extracted['Time Horizon']['max_years'])
+
+#     def calculate_compounded_return(principal, rate, years):
+#         return principal * (1 + rate / 100) ** years
+
+#     def calculate_inflation_adjusted_return(nominal_return, inflation_rate, years):
+#         return nominal_return / (1 + inflation_rate / 100) ** years
+
+#     labels = list(range(1, max_years + 1))  # Years for the x-axis
+#     min_compounded = []
+#     max_compounded = []
+#     min_inflation_adjusted = []
+#     max_inflation_adjusted = []
+
+#     for year in labels:
+#         # Calculate nominal compounded returns
+#         min_compounded_value = calculate_compounded_return(initial_investment, min_return, year)
+#         max_compounded_value = calculate_compounded_return(initial_investment, max_return, year)
+
+#         # Calculate inflation-adjusted compounded returns
+#         min_inflation_value = calculate_inflation_adjusted_return(min_compounded_value, inflation_rate, year)
+#         max_inflation_value = calculate_inflation_adjusted_return(max_compounded_value, inflation_rate, year)
+
+#         # Append results
+#         min_compounded.append(min_compounded_value)
+#         max_compounded.append(max_compounded_value)
+#         min_inflation_adjusted.append(min_inflation_value)
+#         max_inflation_adjusted.append(max_inflation_value)
+
+#     # Combined Line Chart Data for both Nominal and Inflation-Adjusted Compounded Returns
+#     combined_chart_data = {
+#         'labels': labels,
+#         'datasets': [
+#             {
+#                 'label': 'Minimum Compounded Return',
+#                 'data': min_compounded,
+#                 'borderColor': 'rgb(255, 99, 132)',  # Red color
+#                 'fill': False
+#             },
+#             {
+#                 'label': 'Maximum Compounded Return',
+#                 'data': max_compounded,
+#                 'borderColor': 'rgb(54, 162, 235)',  # Blue color
+#                 'fill': False
+#             },
+#             {
+#                 'label': 'Min Inflation Adjusted Return',
+#                 'data': min_inflation_adjusted,
+#                 'borderColor': 'rgb(75, 192, 192)',  # Light blue
+#                 'borderDash': [5, 5],  # Dashed line for distinction
+#                 'fill': False
+#             },
+#             {
+#                 'label': 'Max Inflation Adjusted Return',
+#                 'data': max_inflation_adjusted,
+#                 'borderColor': 'rgb(153, 102, 255)',  # Light purple
+#                 'borderDash': [5, 5],  # Dashed line for distinction
+#                 'fill': False
+#             }
+#         ]
+#     }
+
+#     return combined_chart_data
+
 
 
 def plot_investment_allocations(data):
@@ -2157,7 +2225,7 @@ def generate_investment_suggestions():
         # Prepare the data for the line chart with inflation adjustment
         initial_investment = 10000
         compounded_chart_data, inflation_adjusted_chart_data = prepare_line_chart_data_with_inflation(data_extracted, initial_investment)
-       
+        # combined_chart_data = prepare_combined_line_chart_data(data_extracted, initial_investment)
         
         # return jsonify({"status":200,"message":"Success",'investmentSuggestions': htmlSuggestions}), 200
         return jsonify({
