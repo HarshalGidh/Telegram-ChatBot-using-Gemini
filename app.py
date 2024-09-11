@@ -804,6 +804,82 @@ def normalize_allocations(allocations):
     return [round((allocation / total) * 100, 2) for allocation in allocations]
 
 
+def prepare_line_chart_data_with_inflation(data_extracted, initial_investment=10000, inflation_rate=4):
+    min_return = data_extracted['Expected Annual Return']['min']
+    max_return = data_extracted['Expected Annual Return']['max']
+    min_years = data_extracted['Time Horizon']['min_years']
+    max_years = data_extracted['Time Horizon']['max_years']
+
+    def calculate_compounded_return(principal, rate, years):
+        return principal * (1 + rate / 100) ** years
+
+    def calculate_inflation_adjusted_return(nominal_return, inflation_rate, years):
+        return nominal_return / (1 + inflation_rate / 100) ** years
+
+    labels = list(range(1, max_years + 1))  # Years for the x-axis
+    min_compounded = []
+    max_compounded = []
+    min_inflation_adjusted = []
+    max_inflation_adjusted = []
+
+    for year in labels:
+        # Calculate compounded returns (nominal)
+        min_compounded_value = calculate_compounded_return(initial_investment, min_return, year)
+        max_compounded_value = calculate_compounded_return(initial_investment, max_return, year)
+
+        # Calculate inflation-adjusted returns
+        min_inflation_value = calculate_inflation_adjusted_return(min_compounded_value, inflation_rate, year)
+        max_inflation_value = calculate_inflation_adjusted_return(max_compounded_value, inflation_rate, year)
+
+        # Append results
+        min_compounded.append(min_compounded_value)
+        max_compounded.append(max_compounded_value)
+        min_inflation_adjusted.append(min_inflation_value)
+        max_inflation_adjusted.append(max_inflation_value)
+
+    # Line Chart Data for Compounded Returns
+    compounded_return_chart_data = {
+        'labels': labels,
+        'datasets': [
+            {
+                'label': 'Minimum Compounded Return',
+                'data': min_compounded,
+                'borderColor': 'rgb(255, 99, 132)',  # Red color
+                'fill': False
+            },
+            {
+                'label': 'Maximum Compounded Return',
+                'data': max_compounded,
+                'borderColor': 'rgb(54, 162, 235)',  # Blue color
+                'fill': False
+            }
+        ]
+    }
+
+    # Line Chart Data for Inflation-Adjusted Returns
+    inflation_adjusted_chart_data = {
+        'labels': labels,
+        'datasets': [
+            {
+                'label': 'Min Inflation Adjusted Return',
+                'data': min_inflation_adjusted,
+                'borderColor': 'rgb(75, 192, 192)',  # Light blue
+                'fill': False
+            },
+            {
+                'label': 'Max Inflation Adjusted Return',
+                'data': max_inflation_adjusted,
+                'borderColor': 'rgb(153, 102, 255)',  # Light purple
+                'fill': False
+            }
+        ]
+    }
+
+    return compounded_return_chart_data, inflation_adjusted_chart_data
+
+
+
+
 def plot_investment_allocations(data):
     # Create subplots with a large figure size
     fig, axes = plt.subplots(2, 1, figsize= (16,10)) #(28, 15))  # Adjust size as needed
@@ -2077,6 +2153,10 @@ def generate_investment_suggestions():
         #     }]
         # }
 
+        
+        # Prepare the data for the line chart with inflation adjustment
+        initial_investment = 10000
+        compounded_chart_data, inflation_adjusted_chart_data = prepare_line_chart_data_with_inflation(data_extracted, initial_investment)
        
         
         # return jsonify({"status":200,"message":"Success",'investmentSuggestions': htmlSuggestions}), 200
@@ -2085,7 +2165,9 @@ def generate_investment_suggestions():
             "message": "Success",
             "investmentSuggestions": htmlSuggestions,
             "pieChartData": pie_chart_data,
-            "barChartData": bar_chart_data
+            "barChartData": bar_chart_data,
+            "compoundedChartData":compounded_chart_data,
+            "inflationAdjustedChartData": inflation_adjusted_chart_data
         }), 200
 
     except Exception as e:
