@@ -31,3 +31,4 @@ markdown
 markdown2
 bs4
 filetype
+yfinance
